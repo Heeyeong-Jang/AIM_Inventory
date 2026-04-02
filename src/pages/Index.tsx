@@ -6,8 +6,9 @@ import { MedicalTable } from "@/components/dashboard/MedicalTable";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
 import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
+import { OutboundFormSheet } from "@/components/dashboard/OutboundFormSheet";
 import { useDashboardData, type AlertItem } from "@/hooks/useDashboardData";
-import { Package, Plus, ArrowDownToLine } from "lucide-react";
+import { Package, Plus, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
