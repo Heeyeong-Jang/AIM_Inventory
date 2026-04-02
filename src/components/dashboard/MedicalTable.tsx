@@ -21,7 +21,7 @@ function GradeBadge({ grade }: { grade: string }) {
   );
 }
 
-export function MedicalTable({ skus }: MedicalTableProps) {
+export function MedicalTable({ skus, highlightSkuId }: MedicalTableProps) {
   const medical = skus.filter((s) => s.category === "medical");
 
   const sixtyDays = new Date();
