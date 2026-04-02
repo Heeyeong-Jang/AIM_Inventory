@@ -19,9 +19,15 @@ const Index = () => {
           <div className="p-2 rounded-lg bg-primary text-primary-foreground">
             <Package className="h-5 w-5" />
           </div>
-          <div>
+           <div>
             <h1 className="text-xl font-bold tracking-tight">SCM 대시보드</h1>
             <p className="text-sm text-muted-foreground">재고 및 공급망 현황</p>
+          </div>
+          <div className="ml-auto">
+            <Button onClick={() => setSkuFormOpen(true)} size="sm">
+              <Plus className="h-4 w-4 mr-1.5" />
+              SKU 등록
+            </Button>
           </div>
         </div>
       </header>
