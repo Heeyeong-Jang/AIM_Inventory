@@ -4,13 +4,15 @@ import { MetricsRow } from "@/components/dashboard/MetricsRow";
 import { CosmeticsTable } from "@/components/dashboard/CosmeticsTable";
 import { MedicalTable } from "@/components/dashboard/MedicalTable";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
+import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { Package, Plus } from "lucide-react";
+import { Package, Plus, ArrowDownToLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { skus, totalSkus, lowStockCount, expiringSoonCount, inboundThisMonth, isLoading } = useDashboardData();
   const [skuFormOpen, setSkuFormOpen] = useState(false);
+  const [inboundFormOpen, setInboundFormOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -23,7 +25,11 @@ const Index = () => {
             <h1 className="text-xl font-bold tracking-tight">SCM 대시보드</h1>
             <p className="text-sm text-muted-foreground">재고 및 공급망 현황</p>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex gap-2">
+            <Button onClick={() => setInboundFormOpen(true)} size="sm" variant="outline">
+              <ArrowDownToLine className="h-4 w-4 mr-1.5" />
+              입고 등록
+            </Button>
             <Button onClick={() => setSkuFormOpen(true)} size="sm">
               <Plus className="h-4 w-4 mr-1.5" />
               SKU 등록
@@ -60,6 +66,7 @@ const Index = () => {
         )}
       </main>
       <SkuFormSheet open={skuFormOpen} onOpenChange={setSkuFormOpen} />
+      <InboundFormSheet open={inboundFormOpen} onOpenChange={setInboundFormOpen} />
     </div>
   );
 };
