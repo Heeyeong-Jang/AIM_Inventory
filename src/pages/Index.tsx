@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   const { skus, totalSkus, lowStockCount, expiringSoonCount, inboundThisMonth, isLoading } = useDashboardData();
   const [skuFormOpen, setSkuFormOpen] = useState(false);
+  const [inboundFormOpen, setInboundFormOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
