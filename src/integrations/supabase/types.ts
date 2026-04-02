@@ -14,7 +14,150 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      inbound_orders: {
+        Row: {
+          created_at: string | null
+          expected_at: string | null
+          id: string
+          quantity: number | null
+          sku_id: string | null
+          status: string | null
+          supplier: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          expected_at?: string | null
+          id?: string
+          quantity?: number | null
+          sku_id?: string | null
+          status?: string | null
+          supplier?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          expected_at?: string | null
+          id?: string
+          quantity?: number | null
+          sku_id?: string | null
+          status?: string | null
+          supplier?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inbound_orders_sku_id_fkey"
+            columns: ["sku_id"]
+            isOneToOne: false
+            referencedRelation: "skus"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory: {
+        Row: {
+          expires_at: string | null
+          id: string
+          lot_number: string | null
+          quantity: number | null
+          sku_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          expires_at?: string | null
+          id?: string
+          lot_number?: string | null
+          quantity?: number | null
+          sku_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          expires_at?: string | null
+          id?: string
+          lot_number?: string | null
+          quantity?: number | null
+          sku_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_sku_id_fkey"
+            columns: ["sku_id"]
+            isOneToOne: false
+            referencedRelation: "skus"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outbound_logs: {
+        Row: {
+          channel: string | null
+          destination: string | null
+          id: string
+          lot_number: string | null
+          quantity: number | null
+          shipped_at: string | null
+          sku_id: string | null
+        }
+        Insert: {
+          channel?: string | null
+          destination?: string | null
+          id?: string
+          lot_number?: string | null
+          quantity?: number | null
+          shipped_at?: string | null
+          sku_id?: string | null
+        }
+        Update: {
+          channel?: string | null
+          destination?: string | null
+          id?: string
+          lot_number?: string | null
+          quantity?: number | null
+          shipped_at?: string | null
+          sku_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outbound_logs_sku_id_fkey"
+            columns: ["sku_id"]
+            isOneToOne: false
+            referencedRelation: "skus"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skus: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          name: string
+          safety_stock: number | null
+          supplier: string | null
+          unit_price: number | null
+          volume: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          safety_stock?: number | null
+          supplier?: string | null
+          unit_price?: number | null
+          volume?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          safety_stock?: number | null
+          supplier?: string | null
+          unit_price?: number | null
+          volume?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
