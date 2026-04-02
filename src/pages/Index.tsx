@@ -66,6 +66,7 @@ const Index = () => {
         )}
       </main>
       <SkuFormSheet open={skuFormOpen} onOpenChange={setSkuFormOpen} />
+      <InboundFormSheet open={inboundFormOpen} onOpenChange={setInboundFormOpen} />
     </div>
   );
 };
