@@ -9,7 +9,7 @@ interface CosmeticsTableProps {
   highlightSkuId?: string | null;
 }
 
-export function CosmeticsTable({ skus }: CosmeticsTableProps) {
+export function CosmeticsTable({ skus, highlightSkuId }: CosmeticsTableProps) {
   const cosmetics = skus.filter((s) => s.category === "cosmetics");
 
   const sixtyDays = new Date();
