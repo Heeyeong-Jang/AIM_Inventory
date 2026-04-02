@@ -16,6 +16,15 @@ export interface SkuWithInventory {
   }[];
 }
 
+export interface AlertItem {
+  type: "low_stock" | "expiring" | "overdue";
+  skuId: string;
+  skuName: string;
+  category: string | null;
+}
+
+const REFETCH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
 export function useDashboardData() {
   const skusQuery = useQuery({
     queryKey: ["skus-with-inventory"],
@@ -32,6 +41,7 @@ export function useDashboardData() {
         inventory: s.inventory ?? [],
       }));
     },
+    refetchInterval: REFETCH_INTERVAL,
   });
 
   const inboundQuery = useQuery({
@@ -48,6 +58,22 @@ export function useDashboardData() {
       if (error) throw error;
       return count ?? 0;
     },
+    refetchInterval: REFETCH_INTERVAL,
+  });
+
+  const overdueQuery = useQuery({
+    queryKey: ["overdue-inbound"],
+    queryFn: async () => {
+      const today = new Date().toISOString().split("T")[0];
+      const { data, error } = await supabase
+        .from("inbound_orders")
+        .select("id, sku_id, skus(name, category)")
+        .lt("expected_at", today)
+        .neq("status", "received");
+      if (error) throw error;
+      return data ?? [];
+    },
+    refetchInterval: REFETCH_INTERVAL,
   });
 
   const skus = skusQuery.data ?? [];
@@ -58,14 +84,30 @@ export function useDashboardData() {
 
   let lowStockCount = 0;
   let expiringSoonCount = 0;
+  const alerts: AlertItem[] = [];
 
   skus.forEach((sku) => {
     const totalQty = sku.inventory.reduce((sum, inv) => sum + (inv.quantity ?? 0), 0);
-    if (totalQty < sku.safety_stock) lowStockCount++;
+    if (totalQty < sku.safety_stock) {
+      lowStockCount++;
+      alerts.push({ type: "low_stock", skuId: sku.id, skuName: sku.name, category: sku.category });
+    }
     sku.inventory.forEach((inv) => {
       if (inv.expires_at && new Date(inv.expires_at) <= sixtyDaysFromNow) {
         expiringSoonCount++;
+        alerts.push({ type: "expiring", skuId: sku.id, skuName: sku.name, category: sku.category });
       }
+    });
+  });
+
+  const overdueOrders = overdueQuery.data ?? [];
+  overdueOrders.forEach((order) => {
+    const skuInfo = order.skus as { name: string; category: string | null } | null;
+    alerts.push({
+      type: "overdue",
+      skuId: order.sku_id ?? "",
+      skuName: skuInfo?.name ?? "알 수 없음",
+      category: skuInfo?.category ?? null,
     });
   });
 
@@ -74,7 +116,10 @@ export function useDashboardData() {
     totalSkus,
     lowStockCount,
     expiringSoonCount,
+    overdueCount: overdueOrders.length,
     inboundThisMonth: inboundQuery.data ?? 0,
+    alerts,
+    totalAlertCount: lowStockCount + expiringSoonCount + overdueOrders.length,
     isLoading: skusQuery.isLoading || inboundQuery.isLoading,
   };
 }

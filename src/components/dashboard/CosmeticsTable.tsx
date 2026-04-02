@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 
 interface CosmeticsTableProps {
   skus: SkuWithInventory[];
+  highlightSkuId?: string | null;
 }
 
-export function CosmeticsTable({ skus }: CosmeticsTableProps) {
+export function CosmeticsTable({ skus, highlightSkuId }: CosmeticsTableProps) {
   const cosmetics = skus.filter((s) => s.category === "cosmetics");
 
   const sixtyDays = new Date();
@@ -42,7 +43,11 @@ export function CosmeticsTable({ skus }: CosmeticsTableProps) {
             const isExpiringSoon = expiresAt && new Date(expiresAt) <= sixtyDays;
 
             return (
-              <TableRow key={sku.id}>
+              <TableRow
+                key={sku.id}
+                id={`sku-row-${sku.id}`}
+                className={cn(highlightSkuId === sku.id && "ring-2 ring-primary/50 bg-primary/5 animate-pulse")}
+              >
                 <TableCell className="font-medium">
                   {sku.name}
                   {sku.volume && <span className="text-muted-foreground ml-1 text-xs">({sku.volume})</span>}

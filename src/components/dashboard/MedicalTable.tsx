@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface MedicalTableProps {
   skus: SkuWithInventory[];
+  highlightSkuId?: string | null;
 }
 
 function GradeBadge({ grade }: { grade: string }) {
@@ -20,7 +21,7 @@ function GradeBadge({ grade }: { grade: string }) {
   );
 }
 
-export function MedicalTable({ skus }: MedicalTableProps) {
+export function MedicalTable({ skus, highlightSkuId }: MedicalTableProps) {
   const medical = skus.filter((s) => s.category === "medical");
 
   const sixtyDays = new Date();
@@ -55,7 +56,11 @@ export function MedicalTable({ skus }: MedicalTableProps) {
             const grade = sku.volume?.includes("2") ? "2등급" : "1등급";
 
             return (
-              <TableRow key={sku.id}>
+              <TableRow
+                key={sku.id}
+                id={`sku-row-${sku.id}`}
+                className={cn(highlightSkuId === sku.id && "ring-2 ring-primary/50 bg-primary/5 animate-pulse")}
+              >
                 <TableCell className="font-medium">{sku.name}</TableCell>
                 <TableCell><GradeBadge grade={grade} /></TableCell>
                 <TableCell className="text-muted-foreground">{firstInv?.lot_number ?? "-"}</TableCell>
