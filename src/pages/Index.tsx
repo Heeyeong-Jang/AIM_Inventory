@@ -55,6 +55,12 @@ const Index = () => {
             <p className="text-sm text-muted-foreground">재고 및 공급망 현황</p>
           </div>
           <div className="ml-auto flex gap-2">
+            {activeTab === "medical" && (
+              <Button onClick={() => setOutboundFormOpen(true)} size="sm" variant="outline">
+                <ArrowUpFromLine className="h-4 w-4 mr-1.5" />
+                출고 등록
+              </Button>
+            )}
             <Button onClick={() => setInboundFormOpen(true)} size="sm" variant="outline">
               <ArrowDownToLine className="h-4 w-4 mr-1.5" />
               입고 등록
