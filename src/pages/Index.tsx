@@ -18,6 +18,7 @@ const Index = () => {
   } = useDashboardData();
   const [skuFormOpen, setSkuFormOpen] = useState(false);
   const [inboundFormOpen, setInboundFormOpen] = useState(false);
+  const [outboundFormOpen, setOutboundFormOpen] = useState(false);
   const [highlightSkuId, setHighlightSkuId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("cosmetics");
 
