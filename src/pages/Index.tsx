@@ -1,12 +1,16 @@
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MetricsRow } from "@/components/dashboard/MetricsRow";
 import { CosmeticsTable } from "@/components/dashboard/CosmeticsTable";
 import { MedicalTable } from "@/components/dashboard/MedicalTable";
+import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { Package } from "lucide-react";
+import { Package, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { skus, totalSkus, lowStockCount, expiringSoonCount, inboundThisMonth, isLoading } = useDashboardData();
+  const [skuFormOpen, setSkuFormOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
