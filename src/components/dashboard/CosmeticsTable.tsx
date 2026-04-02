@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface CosmeticsTableProps {
   skus: SkuWithInventory[];
+  highlightSkuId?: string | null;
 }
 
 export function CosmeticsTable({ skus }: CosmeticsTableProps) {
