@@ -59,8 +59,8 @@ const Index = () => {
           </>
         )}
       </main>
+      <SkuFormSheet open={skuFormOpen} onOpenChange={setSkuFormOpen} />
     </div>
-  );
 };
 
 export default Index;
