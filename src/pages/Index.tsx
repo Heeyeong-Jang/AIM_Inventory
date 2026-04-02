@@ -6,8 +6,9 @@ import { MedicalTable } from "@/components/dashboard/MedicalTable";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
 import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
+import { OutboundFormSheet } from "@/components/dashboard/OutboundFormSheet";
 import { useDashboardData, type AlertItem } from "@/hooks/useDashboardData";
-import { Package, Plus, ArrowDownToLine } from "lucide-react";
+import { Package, Plus, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
   } = useDashboardData();
   const [skuFormOpen, setSkuFormOpen] = useState(false);
   const [inboundFormOpen, setInboundFormOpen] = useState(false);
+  const [outboundFormOpen, setOutboundFormOpen] = useState(false);
   const [highlightSkuId, setHighlightSkuId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("cosmetics");
 
@@ -53,6 +55,12 @@ const Index = () => {
             <p className="text-sm text-muted-foreground">재고 및 공급망 현황</p>
           </div>
           <div className="ml-auto flex gap-2">
+            {activeTab === "medical" && (
+              <Button onClick={() => setOutboundFormOpen(true)} size="sm" variant="outline">
+                <ArrowUpFromLine className="h-4 w-4 mr-1.5" />
+                출고 등록
+              </Button>
+            )}
             <Button onClick={() => setInboundFormOpen(true)} size="sm" variant="outline">
               <ArrowDownToLine className="h-4 w-4 mr-1.5" />
               입고 등록
@@ -96,6 +104,7 @@ const Index = () => {
       </main>
       <SkuFormSheet open={skuFormOpen} onOpenChange={setSkuFormOpen} />
       <InboundFormSheet open={inboundFormOpen} onOpenChange={setInboundFormOpen} />
+      <OutboundFormSheet open={outboundFormOpen} onOpenChange={setOutboundFormOpen} />
     </div>
   );
 };
