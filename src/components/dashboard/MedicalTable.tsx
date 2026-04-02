@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface MedicalTableProps {
   skus: SkuWithInventory[];
+  highlightSkuId?: string | null;
 }
 
 function GradeBadge({ grade }: { grade: string }) {
