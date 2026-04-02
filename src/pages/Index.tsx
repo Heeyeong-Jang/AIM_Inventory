@@ -104,6 +104,7 @@ const Index = () => {
       </main>
       <SkuFormSheet open={skuFormOpen} onOpenChange={setSkuFormOpen} />
       <InboundFormSheet open={inboundFormOpen} onOpenChange={setInboundFormOpen} />
+      <OutboundFormSheet open={outboundFormOpen} onOpenChange={setOutboundFormOpen} />
     </div>
   );
 };
