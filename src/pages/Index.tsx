@@ -4,8 +4,9 @@ import { MetricsRow } from "@/components/dashboard/MetricsRow";
 import { CosmeticsTable } from "@/components/dashboard/CosmeticsTable";
 import { MedicalTable } from "@/components/dashboard/MedicalTable";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
+import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { Package, Plus } from "lucide-react";
+import { Package, Plus, ArrowDownToLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
