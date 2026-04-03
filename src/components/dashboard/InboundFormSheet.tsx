@@ -149,15 +149,21 @@ export function InboundFormSheet({ open, onOpenChange }: InboundFormSheetProps) 
 
     // 2. If received, update inventory
     if (parsed.data.status === "received") {
-      const { data: existing } = await supabase
+      const { data: existing, error: fetchError } = await supabase
         .from("inventory")
         .select("id, quantity")
         .eq("sku_id", parsed.data.sku_id)
         .eq("lot_number", parsed.data.lot_number)
         .maybeSingle();
 
+      if (fetchError) {
+        console.error("inventory fetch error:", fetchError);
+        toast.error("재고 조회 중 오류: " + fetchError.message);
+      }
+
+      let inventoryError: { message: string } | null = null;
       if (existing) {
-        await supabase
+        const { error } = await supabase
           .from("inventory")
           .update({
             quantity: (existing.quantity ?? 0) + parsed.data.quantity,
@@ -165,13 +171,22 @@ export function InboundFormSheet({ open, onOpenChange }: InboundFormSheetProps) 
             updated_at: new Date().toISOString(),
           })
           .eq("id", existing.id);
+        inventoryError = error;
       } else {
-        await supabase.from("inventory").insert({
+        const { error } = await supabase.from("inventory").insert({
           sku_id: parsed.data.sku_id,
           quantity: parsed.data.quantity,
           lot_number: parsed.data.lot_number,
           expires_at: parsed.data.expires_at,
         });
+        inventoryError = error;
+      }
+
+      if (inventoryError) {
+        console.error("inventory update error:", inventoryError);
+        toast.error("재고 반영 중 오류: " + inventoryError.message);
+        setSubmitting(false);
+        return;
       }
     }
 
@@ -179,7 +194,9 @@ export function InboundFormSheet({ open, onOpenChange }: InboundFormSheetProps) 
     toast.success("입고가 성공적으로 등록되었습니다.");
     queryClient.invalidateQueries({ queryKey: ["skus-with-inventory"] });
     queryClient.invalidateQueries({ queryKey: ["inbound-this-month"] });
+    queryClient.invalidateQueries({ queryKey: ["overdue-inbound"] });
     queryClient.invalidateQueries({ queryKey: ["recent-inbound-orders"] });
+    queryClient.invalidateQueries({ queryKey: ["skus-list"] });
     resetForm();
     onOpenChange(false);
   }
