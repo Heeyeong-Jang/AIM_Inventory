@@ -34,8 +34,8 @@ export function RecentOrdersTable() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("outbound_logs")
-        .select("id, quantity, destination, channel, shipped_at, created_at, skus(name)")
-        .order("created_at", { ascending: false })
+        .select("id, quantity, destination, channel, shipped_at, skus(name)")
+        .order("shipped_at", { ascending: false })
         .limit(5);
       if (error) throw error;
       return data;
