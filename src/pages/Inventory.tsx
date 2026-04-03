@@ -29,7 +29,7 @@ const STATUS_LABELS: Record<string, string> = {
 function SkuDetailPanel({ skuId }: { skuId: string }) {
   const queryClient = useQueryClient();
 
-  async function handleStatusChange(orderId: string, newStatus: string) {
+  async function handleStatusChange(orderId: string, newStatus: string, oldStatus: string, orderQuantity: number) {
     const { error } = await supabase
       .from("inbound_orders")
       .update({ status: newStatus })
@@ -38,8 +38,53 @@ function SkuDetailPanel({ skuId }: { skuId: string }) {
       toast.error("상태 변경 실패: " + error.message);
       return;
     }
+
+    // "received"로 변경 시 재고 추가, "received"에서 다른 상태로 변경 시 재고 차감
+    const wasReceived = oldStatus === "received";
+    const isNowReceived = newStatus === "received";
+
+    if (!wasReceived && isNowReceived) {
+      // 재고 추가
+      const { data: existing } = await supabase
+        .from("inventory")
+        .select("id, quantity")
+        .eq("sku_id", skuId)
+        .limit(1)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("inventory")
+          .update({ quantity: (existing.quantity ?? 0) + orderQuantity, updated_at: new Date().toISOString() })
+          .eq("id", existing.id);
+      } else {
+        await supabase.from("inventory").insert({
+          sku_id: skuId,
+          quantity: orderQuantity,
+          lot_number: `AUTO-${orderId.slice(0, 8)}`,
+        });
+      }
+    } else if (wasReceived && !isNowReceived) {
+      // 재고 차감
+      const { data: existing } = await supabase
+        .from("inventory")
+        .select("id, quantity")
+        .eq("sku_id", skuId)
+        .limit(1)
+        .maybeSingle();
+
+      if (existing) {
+        const newQty = Math.max((existing.quantity ?? 0) - orderQuantity, 0);
+        await supabase
+          .from("inventory")
+          .update({ quantity: newQty, updated_at: new Date().toISOString() })
+          .eq("id", existing.id);
+      }
+    }
+
     toast.success("상태가 변경되었습니다.");
     queryClient.invalidateQueries({ queryKey: ["sku-inbound-history", skuId] });
+    queryClient.invalidateQueries({ queryKey: ["sku-inventory-detail", skuId] });
     queryClient.invalidateQueries({ queryKey: ["skus-with-inventory"] });
     queryClient.invalidateQueries({ queryKey: ["recent-inbound-5"] });
     queryClient.invalidateQueries({ queryKey: ["inbound-this-month"] });
@@ -155,7 +200,7 @@ function SkuDetailPanel({ skuId }: { skuId: string }) {
                       <TableCell>
                         <Select
                           value={row.status ?? "pending"}
-                          onValueChange={(val) => handleStatusChange(row.id, val)}
+                          onValueChange={(val) => handleStatusChange(row.id, val, row.status ?? "pending", row.quantity ?? 0)}
                         >
                           <SelectTrigger className="h-7 text-[10px] w-[90px]">
                             <SelectValue />
