@@ -153,9 +153,19 @@ function SkuDetailPanel({ skuId }: { skuId: string }) {
                       <TableCell className="text-xs text-right tabular-nums">{(row.quantity ?? 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{row.supplier ?? "-"}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="text-[10px]">
-                          {STATUS_LABELS[row.status ?? "pending"] ?? row.status}
-                        </Badge>
+                        <Select
+                          value={row.status ?? "pending"}
+                          onValueChange={(val) => handleStatusChange(row.id, val)}
+                        >
+                          <SelectTrigger className="h-7 text-[10px] w-[90px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                              <SelectItem key={key} value={key} className="text-xs">{label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                     </TableRow>
                   ))}
