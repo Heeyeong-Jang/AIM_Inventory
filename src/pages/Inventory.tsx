@@ -27,6 +27,24 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function SkuDetailPanel({ skuId }: { skuId: string }) {
+  const queryClient = useQueryClient();
+
+  async function handleStatusChange(orderId: string, newStatus: string) {
+    const { error } = await supabase
+      .from("inbound_orders")
+      .update({ status: newStatus })
+      .eq("id", orderId);
+    if (error) {
+      toast.error("상태 변경 실패: " + error.message);
+      return;
+    }
+    toast.success("상태가 변경되었습니다.");
+    queryClient.invalidateQueries({ queryKey: ["sku-inbound-history", skuId] });
+    queryClient.invalidateQueries({ queryKey: ["skus-with-inventory"] });
+    queryClient.invalidateQueries({ queryKey: ["recent-inbound-5"] });
+    queryClient.invalidateQueries({ queryKey: ["inbound-this-month"] });
+    queryClient.invalidateQueries({ queryKey: ["overdue-inbound"] });
+  }
   const inboundQuery = useQuery({
     queryKey: ["sku-inbound-history", skuId],
     queryFn: async () => {
