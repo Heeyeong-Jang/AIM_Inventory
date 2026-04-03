@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { MetricsRow } from "@/components/dashboard/MetricsRow";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
 import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
@@ -8,7 +8,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { Package, Plus, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const Index = () => {
+const Index: React.FC = () => {
   const {
     totalSkus, lowStockCount, expiringSoonCount,
     inboundThisMonth, alerts, totalAlertCount, isLoading,
