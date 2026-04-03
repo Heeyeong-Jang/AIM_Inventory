@@ -23,18 +23,13 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("cosmetics");
 
   const handleAlertClick = useCallback((alert: AlertItem) => {
-    // Switch to correct tab
     const tab = alert.category === "medical" ? "medical" : "cosmetics";
     setActiveTab(tab);
     setHighlightSkuId(alert.skuId);
-
-    // Scroll to row after tab switch renders
     setTimeout(() => {
       const el = document.getElementById(`sku-row-${alert.skuId}`);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 100);
-
-    // Clear highlight after 3s
     setTimeout(() => setHighlightSkuId(null), 3000);
   }, []);
 
