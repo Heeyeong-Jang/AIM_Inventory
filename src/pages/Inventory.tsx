@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { StockBar } from "@/components/dashboard/StockBar";
 import { StockStatusBadge } from "@/components/dashboard/StockStatusBadge";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -23,6 +27,24 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function SkuDetailPanel({ skuId }: { skuId: string }) {
+  const queryClient = useQueryClient();
+
+  async function handleStatusChange(orderId: string, newStatus: string) {
+    const { error } = await supabase
+      .from("inbound_orders")
+      .update({ status: newStatus })
+      .eq("id", orderId);
+    if (error) {
+      toast.error("상태 변경 실패: " + error.message);
+      return;
+    }
+    toast.success("상태가 변경되었습니다.");
+    queryClient.invalidateQueries({ queryKey: ["sku-inbound-history", skuId] });
+    queryClient.invalidateQueries({ queryKey: ["skus-with-inventory"] });
+    queryClient.invalidateQueries({ queryKey: ["recent-inbound-5"] });
+    queryClient.invalidateQueries({ queryKey: ["inbound-this-month"] });
+    queryClient.invalidateQueries({ queryKey: ["overdue-inbound"] });
+  }
   const inboundQuery = useQuery({
     queryKey: ["sku-inbound-history", skuId],
     queryFn: async () => {
@@ -131,9 +153,19 @@ function SkuDetailPanel({ skuId }: { skuId: string }) {
                       <TableCell className="text-xs text-right tabular-nums">{(row.quantity ?? 0).toLocaleString()}</TableCell>
                       <TableCell className="text-xs text-muted-foreground">{row.supplier ?? "-"}</TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="text-[10px]">
-                          {STATUS_LABELS[row.status ?? "pending"] ?? row.status}
-                        </Badge>
+                        <Select
+                          value={row.status ?? "pending"}
+                          onValueChange={(val) => handleStatusChange(row.id, val)}
+                        >
+                          <SelectTrigger className="h-7 text-[10px] w-[90px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                              <SelectItem key={key} value={key} className="text-xs">{label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                     </TableRow>
                   ))}
