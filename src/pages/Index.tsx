@@ -1,13 +1,10 @@
-import { useState, useCallback } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
 import { MetricsRow } from "@/components/dashboard/MetricsRow";
-import { CosmeticsTable } from "@/components/dashboard/CosmeticsTable";
-import { MedicalTable } from "@/components/dashboard/MedicalTable";
 import { SkuFormSheet } from "@/components/dashboard/SkuFormSheet";
 import { InboundFormSheet } from "@/components/dashboard/InboundFormSheet";
 import { AlertBanner } from "@/components/dashboard/AlertBanner";
 import { OutboundFormSheet } from "@/components/dashboard/OutboundFormSheet";
-import { useDashboardData, type AlertItem } from "@/hooks/useDashboardData";
+import { useDashboardData } from "@/hooks/useDashboardData";
 import { Package, Plus, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
