@@ -194,7 +194,9 @@ export function InboundFormSheet({ open, onOpenChange }: InboundFormSheetProps) 
     toast.success("입고가 성공적으로 등록되었습니다.");
     queryClient.invalidateQueries({ queryKey: ["skus-with-inventory"] });
     queryClient.invalidateQueries({ queryKey: ["inbound-this-month"] });
+    queryClient.invalidateQueries({ queryKey: ["overdue-inbound"] });
     queryClient.invalidateQueries({ queryKey: ["recent-inbound-orders"] });
+    queryClient.invalidateQueries({ queryKey: ["skus-list"] });
     resetForm();
     onOpenChange(false);
   }
