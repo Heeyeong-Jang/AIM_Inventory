@@ -200,7 +200,7 @@ function SkuDetailPanel({ skuId }: { skuId: string }) {
                       <TableCell>
                         <Select
                           value={row.status ?? "pending"}
-                          onValueChange={(val) => handleStatusChange(row.id, val)}
+                          onValueChange={(val) => handleStatusChange(row.id, val, row.status ?? "pending", row.quantity ?? 0)}
                         >
                           <SelectTrigger className="h-7 text-[10px] w-[90px]">
                             <SelectValue />
